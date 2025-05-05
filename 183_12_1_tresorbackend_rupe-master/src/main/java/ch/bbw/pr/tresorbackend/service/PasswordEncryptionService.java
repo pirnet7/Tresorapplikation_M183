@@ -1,6 +1,10 @@
 package ch.bbw.pr.tresorbackend.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import java.util.Base64;
 
 /**
  * PasswordEncryptionService
@@ -8,7 +12,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PasswordEncryptionService {
-   //todo ergänzen!
+   @Value("${password.pepper}")
+   private String pepper;
+
+   private final SecureRandom secureRandom;
 
    public PasswordEncryptionService() {
       //todo anpassen!
