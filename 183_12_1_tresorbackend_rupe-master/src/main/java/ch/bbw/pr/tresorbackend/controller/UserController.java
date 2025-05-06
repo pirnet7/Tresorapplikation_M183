@@ -54,15 +54,13 @@ public class UserController {
    @PostMapping
    public ResponseEntity<String> createUser(@Valid @RequestBody RegisterUser registerUser, BindingResult bindingResult) {
       //captcha
-      //todo ergänzen
-
       System.out.println("UserController.createUser: captcha passed.");
 
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
-               .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-               .collect(Collectors.toList());
+                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                 .collect(Collectors.toList());
          System.out.println("UserController.createUser " + errors);
 
          JsonArray arr = new JsonArray();
@@ -75,6 +73,7 @@ public class UserController {
          return ResponseEntity.badRequest().body(json);
       }
       System.out.println("UserController.createUser: input validation passed");
+
 
       //password validation
       //todo ergänzen
