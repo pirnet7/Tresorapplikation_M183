@@ -81,12 +81,12 @@ public class UserController {
 
       //transform registerUser to user
       User user = new User(
-            null,
-            registerUser.getFirstName(),
-            registerUser.getLastName(),
-            registerUser.getEmail(),
-            passwordService.hashPassword(registerUser.getPassword())
-            );
+              null,
+              registerUser.getFirstName(),
+              registerUser.getLastName(),
+              registerUser.getEmail(),
+              passwordService.hashPassword(registerUser.getPassword())
+      );
 
       User savedUser = userService.createUser(user);
       System.out.println("UserController.createUser, user saved in db");
