@@ -2,6 +2,7 @@ package ch.bbw.pr.tresorbackend.controller;
 
 import ch.bbw.pr.tresorbackend.model.ConfigProperties;
 import ch.bbw.pr.tresorbackend.model.EmailAdress;
+import ch.bbw.pr.tresorbackend.model.LoginRequest;
 import ch.bbw.pr.tresorbackend.model.RegisterUser;
 import ch.bbw.pr.tresorbackend.model.User;
 import ch.bbw.pr.tresorbackend.service.PasswordEncryptionService;
@@ -134,6 +135,45 @@ public class UserController {
       return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
    }
 
+   @CrossOrigin(origins = "${CROSS_ORIGIN}")
+   @PostMapping("/login")
+   public ResponseEntity<String> loginUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult bindingResult) {
+      if (bindingResult.hasErrors()) {
+         List<String> errors = bindingResult.getFieldErrors().stream()
+                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                 .collect(Collectors.toList());
+         JsonObject errorResponse = new JsonObject();
+         JsonArray arr = new JsonArray();
+         errors.forEach(arr::add);
+         errorResponse.add("message", arr);
+         return ResponseEntity.badRequest().body(new Gson().toJson(errorResponse));
+      }
+
+      User user = userService.findByEmail(loginRequest.getEmail());
+
+      if (user == null) {
+         JsonObject response = new JsonObject();
+         response.addProperty("message", "Authentication failed: User not found.");
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Gson().toJson(response));
+      }
+
+      if (passwordService.verifyPassword(loginRequest.getPassword(), user.getPassword())) {
+         // Authentication successful
+         // In a real application, you would typically generate a JWT or session token here.
+         // For this example, we'll return a success message with the user's ID.
+         JsonObject response = new JsonObject();
+         response.addProperty("message", "Authentication successful.");
+         response.addProperty("userId", user.getId());
+         // It's generally not a good idea to return the full user object with password hash.
+         // Consider creating a UserDTO without sensitive information.
+         return ResponseEntity.ok().body(new Gson().toJson(response));
+      } else {
+         // Authentication failed
+         JsonObject response = new JsonObject();
+         response.addProperty("message", "Authentication failed: Invalid credentials.");
+         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Gson().toJson(response));
+      }
+   }
 
    // get user id by email
    @CrossOrigin(origins = "${CROSS_ORIGIN}")

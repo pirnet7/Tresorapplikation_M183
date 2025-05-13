@@ -17,7 +17,7 @@ CREATE TABLE user (
     first_name varchar(30) NOT NULL,
     last_name varchar(30) NOT NULL,
     email varchar(30) NOT NULL,
-    password longtext NOT NULL,
+    password varchar(72) NOT NULL,
     PRIMARY KEY (id)
 );
 
