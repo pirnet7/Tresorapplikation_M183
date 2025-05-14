@@ -92,7 +92,7 @@ public class UserController {
       String userSalt = SaltGenerator.generateSaltHex(16); // 16 bytes = 128 bits, results in 32 hex chars
       newUser.setUserSalt(userSalt);
 
-      User createdUser = userService.create(newUser);
+      User createdUser = userService.createUser(newUser);
       System.out.println("UserController.createUser, user saved in db");
       JsonObject obj = new JsonObject();
       obj.addProperty("answer", "User Saved");
