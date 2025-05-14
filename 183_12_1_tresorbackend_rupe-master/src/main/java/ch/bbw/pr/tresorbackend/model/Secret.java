@@ -20,9 +20,12 @@ public class Secret {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    private Long id;
 
+   @Column(nullable = false, length = 255)
+   private String title;
+
    @Column(nullable = false, name="user_id")
    private Long userId;
 
-   @Column(nullable = false, name="content")
+   @Column(nullable = false, name="content", columnDefinition = "TEXT")
    private String content;
 }

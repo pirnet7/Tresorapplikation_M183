@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * User
@@ -31,5 +32,10 @@ public class User {
    private String email;
 
    @Column(nullable = false)
+   @NotEmpty(message = "Password is required.")
    private String password;
+
+   @Column(name = "user_salt", nullable = false, length = 48)
+   @NotEmpty(message = "User salt is required.")
+   private String userSalt; // Stores Base64 encoded salt for encryption key derivation
 }

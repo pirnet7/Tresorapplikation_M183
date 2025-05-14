@@ -19,6 +19,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewSecret {
+   @NotEmpty (message="Title is required.")
+   @Size(max = 255, message = "Title cannot exceed 255 characters.")
+   private String title;
+
    @NotEmpty (message="email is required.")
    private String email;
 

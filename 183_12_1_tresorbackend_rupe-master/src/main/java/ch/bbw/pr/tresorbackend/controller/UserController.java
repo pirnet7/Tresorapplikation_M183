@@ -7,6 +7,7 @@ import ch.bbw.pr.tresorbackend.model.RegisterUser;
 import ch.bbw.pr.tresorbackend.model.User;
 import ch.bbw.pr.tresorbackend.service.PasswordEncryptionService;
 import ch.bbw.pr.tresorbackend.service.UserService;
+import ch.bbw.pr.tresorbackend.util.SaltGenerator;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -81,15 +82,17 @@ public class UserController {
       System.out.println("UserController.createUser, password validation passed");
 
       //transform registerUser to user
-      User user = new User(
-              null,
-              registerUser.getFirstName(),
-              registerUser.getLastName(),
-              registerUser.getEmail(),
-              passwordService.hashPassword(registerUser.getPassword())
-      );
+      User newUser = new User();
+      newUser.setFirstName(registerUser.getFirstName());
+      newUser.setLastName(registerUser.getLastName());
+      newUser.setEmail(registerUser.getEmail());
+      String hashedPassword = passwordService.hashPassword(registerUser.getPassword());
+      newUser.setPassword(hashedPassword);
+      // Generate and set user-specific salt for encryption key derivation
+      String userSalt = SaltGenerator.generateSaltHex(16); // 16 bytes = 128 bits, results in 32 hex chars
+      newUser.setUserSalt(userSalt);
 
-      User savedUser = userService.createUser(user);
+      User createdUser = userService.create(newUser);
       System.out.println("UserController.createUser, user saved in db");
       JsonObject obj = new JsonObject();
       obj.addProperty("answer", "User Saved");
