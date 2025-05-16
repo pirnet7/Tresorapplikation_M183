@@ -4,7 +4,7 @@
  */
 
 //Post secret to server
-export const postSecret = async ({userId, content}) => {
+export const postSecret = async ({title, email, encryptPassword, content}) => {
     const protocol = process.env.REACT_APP_API_PROTOCOL; // "http"
     const host = process.env.REACT_APP_API_HOST; // "localhost"
     const port = process.env.REACT_APP_API_PORT; // "8080"
@@ -21,8 +21,10 @@ export const postSecret = async ({userId, content}) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                userId: userId,
-                content: JSON.stringify(content),
+                title: title,
+                email: email,
+                encryptPassword: encryptPassword,
+                content: content, // content is now passed as an object
             })
         });
 

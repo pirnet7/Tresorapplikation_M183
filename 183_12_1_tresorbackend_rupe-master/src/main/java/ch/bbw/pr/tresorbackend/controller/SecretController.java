@@ -37,11 +37,17 @@ public class SecretController {
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PostMapping
    public ResponseEntity<String> createSecret2(@Valid @RequestBody NewSecret newSecret, BindingResult bindingResult) {
+      System.out.println("SecretController.createSecret2 - Received NewSecret: " +
+              "Title='" + (newSecret.getTitle() == null ? "null" : newSecret.getTitle()) + "', " +
+              "Email='" + (newSecret.getEmail() == null ? "null" : newSecret.getEmail()) + "', " +
+              "EncryptPassword is " + (newSecret.getEncryptPassword() == null || newSecret.getEncryptPassword().isEmpty() ? "null or empty" : "present") + ", " +
+              "Content is " + (newSecret.getContent() == null ? "null" : "present"));
+
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
-               .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-               .collect(Collectors.toList());
+                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                 .collect(Collectors.toList());
          System.out.println("SecretController.createSecret " + errors);
 
          JsonArray arr = new JsonArray();
@@ -71,7 +77,7 @@ public class SecretController {
          secret.setUserId(user.getId());
          secret.setTitle(newSecret.getTitle());
          secret.setContent(encryptUtil.encrypt(newSecret.getContent().toString()));
-         
+
          secretService.createSecret(secret);
          System.out.println("SecretController.createSecret, secret saved in db");
          JsonObject obj = new JsonObject();
@@ -181,14 +187,14 @@ public class SecretController {
    @CrossOrigin(origins = "${CROSS_ORIGIN}")
    @PutMapping("{id}")
    public ResponseEntity<String> updateSecret(
-         @PathVariable("id") Long secretId,
-         @Valid @RequestBody NewSecret newSecret,
-         BindingResult bindingResult) {
+           @PathVariable("id") Long secretId,
+           @Valid @RequestBody NewSecret newSecret,
+           BindingResult bindingResult) {
       //input validation
       if (bindingResult.hasErrors()) {
          List<String> errors = bindingResult.getFieldErrors().stream()
-               .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-               .collect(Collectors.toList());
+                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                 .collect(Collectors.toList());
          System.out.println("SecretController.updateSecret, validation errors: " + errors);
 
          JsonArray arr = new JsonArray();
@@ -237,7 +243,7 @@ public class SecretController {
          secretToUpdate.setContent(encryptedNewContent);
 
          secretService.updateSecret(secretToUpdate); // updateSecret should handle the actual DB update
-         
+
          System.out.println("SecretController.updateSecret, secret updated in db");
          JsonObject obj = new JsonObject();
          obj.addProperty("answer", "Secret updated");
@@ -260,10 +266,10 @@ public class SecretController {
       // For example, verify the user requesting deletion owns the secret,
       // possibly by requiring them to provide their password to decrypt a dummy part of it.
       // For now, direct deletion.
-      
+
       Secret secret = secretService.getSecretById(secretId);
       if (secret == null) {
-          System.out.println("SecretController.deleteSecret, secret not found with id: " + secretId);
+         System.out.println("SecretController.deleteSecret, secret not found with id: " + secretId);
          return new ResponseEntity<>("Secret not found.", HttpStatus.NOT_FOUND);
       }
       // We might need user context here to ensure only the owner can delete.

@@ -21,9 +21,26 @@ function NewNote({loginValues}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+        console.log("Login values available in NewNote:", loginValues) // For debugging
         try {
-            const content = noteValues;
-            await postSecret({loginValues, content});
+            const title = noteValues.title || "Note"; // Use note's own title or default
+            const email = loginValues.email;
+            const encryptPassword = loginValues.password;
+
+            const contentForBackend = noteValues; // The noteValues object is the content
+
+            if (!email || !encryptPassword) {
+                console.error('Email or master password is missing from loginValues.');
+                setErrorMessage('User session error. Please log in again.');
+                return;
+            }
+
+            await postSecret({
+                title: title,
+                email: email,
+                encryptPassword: encryptPassword,
+                content: contentForBackend
+            });
             setNoteValues(initialState);
             navigate('/secret/secrets');
         } catch (error) {

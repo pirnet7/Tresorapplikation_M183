@@ -23,9 +23,26 @@ function NewCreditCard({loginValues}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+        console.log("Login values available in NewCreditCard:", loginValues) // For debugging
         try {
-            const content = creditCardValues;
-            await postSecret({loginValues, content});
+            const title = creditCardValues.cardtype || "Credit Card"; // Use cardtype as title or default
+            const email = loginValues.email;
+            const encryptPassword = loginValues.password;
+
+            const contentForBackend = creditCardValues;
+
+            if (!email || !encryptPassword) {
+                console.error('Email or master password is missing from loginValues.');
+                setErrorMessage('User session error. Please log in again.');
+                return;
+            }
+
+            await postSecret({
+                title: title,
+                email: email,
+                encryptPassword: encryptPassword,
+                content: contentForBackend
+            });
             setCreditCardValues(initialState);
             navigate('/secret/secrets');
         } catch (error) {

@@ -22,10 +22,28 @@ function NewCredential({loginValues}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-        console.log(loginValues)
+        console.log("Login values available in NewCredential:", loginValues) // For debugging
         try {
-            const content = credentialValues;
-            await postSecret({loginValues, content});
+            // Prepare the data for the backend
+            const title = credentialValues.url || "Credential"; // Use URL as title, or default
+            const email = loginValues.email; 
+            const encryptPassword = loginValues.password; // This is the user's master password
+            
+            // The 'content' for the backend is the credentialValues object itself
+            const contentForBackend = credentialValues;
+
+            if (!email || !encryptPassword) {
+                console.error('Email or master password is missing from loginValues.');
+                setErrorMessage('User session error. Please log in again.');
+                return;
+            }
+
+            await postSecret({
+                title: title,
+                email: email,
+                encryptPassword: encryptPassword,
+                content: contentForBackend 
+            });
             setCredentialValues(initialState);
             navigate('/secret/secrets');
         } catch (error) {
