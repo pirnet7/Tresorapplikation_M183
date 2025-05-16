@@ -18,9 +18,19 @@ const Secrets = ({loginValues}) => {
                 setErrorMessage("No valid email, please do login first.");
             } else {
                 try {
-                    const data = await getSecretsforUser(loginValues);
-                    console.log(data);
-                    setSecrets(data);
+                    const data = await getSecretsforUser({
+                        email: loginValues.email,
+                        encryptPassword: loginValues.password // loginValues.password is the master password
+                    });
+                    console.log("Fetched secrets data:", data);
+                    // Ensure data is an array before setting secrets
+                    if (Array.isArray(data)) {
+                        setSecrets(data);
+                    } else {
+                        console.error('Fetched data is not an array:', data);
+                        setSecrets([]); // Set to empty array if data is not as expected
+                        setErrorMessage('Received unexpected data format for secrets.');
+                    }
                 } catch (error) {
                     console.error('Failed to fetch to server:', error.message);
                     setErrorMessage(error.message);

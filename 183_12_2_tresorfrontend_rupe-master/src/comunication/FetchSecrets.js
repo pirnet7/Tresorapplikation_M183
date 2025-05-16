@@ -42,8 +42,8 @@ export const postSecret = async ({title, email, encryptPassword, content}) => {
     }
 };
 
-//get all secrets for a user by userId
-export const getSecretsforUser = async (userId) => {
+//get all secrets for a user by email and decrypt them using their master password
+export const getSecretsforUser = async ({ email, encryptPassword }) => {
     const protocol = process.env.REACT_APP_API_PROTOCOL; // "http"
     const host = process.env.REACT_APP_API_HOST; // "localhost"
     const port = process.env.REACT_APP_API_PORT; // "8080"
@@ -51,12 +51,21 @@ export const getSecretsforUser = async (userId) => {
     const portPart = port ? `:${port}` : ''; // port is optional
     const API_URL = `${protocol}://${host}${portPart}${path}`;
 
+    if (!email || !encryptPassword) {
+        console.error('Email or encryption password not provided to getSecretsforUser');
+        throw new Error('Email or encryption password is required to fetch secrets.');
+    }
+
     try {
-        const response = await fetch(`${API_URL}/secrets/user/${userId}`, {
-            method: 'GET',
+        const response = await fetch(`${API_URL}/secrets/byemail`, { // Using /byemail endpoint
+            method: 'POST', // Changed to POST
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ // Sending email and encryptPassword in the body
+                email: email,
+                encryptPassword: encryptPassword
+            })
         });
 
         if (!response.ok) {
