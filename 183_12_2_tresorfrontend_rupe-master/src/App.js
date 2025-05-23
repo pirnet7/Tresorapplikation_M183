@@ -23,21 +23,23 @@ function App() {
         password: "",
     });
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Layout loginValues={loginValues}/>}>
-                    <Route index element={<Home/>}/>}/>
-                    <Route path="/user/users" element={<Users loginValues={loginValues}/>}/>
-                    <Route path="/user/login" element={<LoginUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
-                    <Route path="/user/register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
-                    <Route path="/secret/secrets" element={<Secrets loginValues={loginValues}/>}/>
-                    <Route path="/secret/newcredential" element={<NewCredential loginValues={loginValues}/>}/>
-                    <Route path="/secret/newcreditcard" element={<NewCreditCard loginValues={loginValues}/>}/>
-                    <Route path="/secret/newnote" element={<NewNote loginValues={loginValues}/>}/>
-                    <Route path="*" element={<NoPage/>}/>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <div className="App">
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Layout loginValues={loginValues}/>}>
+                        <Route index element={<Home/>}/>
+                        <Route path="/user/users" element={<Users loginValues={loginValues}/>}/>
+                        <Route path="/user/login" element={<LoginUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
+                        <Route path="/user/register" element={<RegisterUser loginValues={loginValues} setLoginValues={setLoginValues}/>}/>
+                        <Route path="/secret/secrets" element={<Secrets loginValues={loginValues}/>}/>
+                        <Route path="/secret/newcredential" element={<NewCredential loginValues={loginValues}/>}/>
+                        <Route path="/secret/newcreditcard" element={<NewCreditCard loginValues={loginValues}/>}/>
+                        <Route path="/secret/newnote" element={<NewNote loginValues={loginValues}/>}/>
+                        <Route path="*" element={<NoPage/>}/>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </div>
     )
 }
 

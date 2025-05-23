@@ -36,3 +36,48 @@
     transform: rotate(360deg);
   }
 }
+
+/* Add custom styling for checkboxes/radios if desired for a more modern look */
+
+/* Enhanced Form Styling (as Cards) */
+form {
+    /* mvp.css already provides: border, border-radius, box-shadow, padding, max-width */
+    /* It also centers the form block if it's a direct child of main or section */
+    text-align: center; /* Center inline and inline-block children within the form */
+    background-color: var(--color-bg); /* Ensure form background matches page background or is slightly offset */
+    /* Example: Add a slightly different background if desired */
+    /* background-color: var(--color-bg-secondary); */
+    /* Example: Enhance padding if needed */
+    /* padding: 2rem; */
+}
+
+form header {
+    /* mvp.css centers header text if text-align is center on form */
+    /* Add specific styling for form headers if needed */
+    margin-bottom: 1.5rem; /* Ensure space below form header */
+}
+
+/* Styling for a wrapper around form elements if you want them left-aligned but the block centered */
+.form-fields-group {
+    display: inline-block; /* Allows centering of the block */
+    text-align: left;    /* Aligns labels and inputs to the left within this group */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Enhanced section aside (MVP Card) Styling */
+section aside {
+    /* mvp.css already provides: border, border-radius, box-shadow, margin, padding, width */
+    text-align: center; /* Center inline and inline-block children */
+}
+
+/* Ensure <main> content blocks are centered and their direct children are also text-centered */
+main {
+    /* mvp.css provides max-width and margin: auto for block centering */
+    text-align: center; /* Ensure direct children like h1, h2, form, table (if inline-block) are centered */
+}
+
+/* App specific styles from create-react-app, can be kept or modified */
+.App {
+  text-align: center;
+}

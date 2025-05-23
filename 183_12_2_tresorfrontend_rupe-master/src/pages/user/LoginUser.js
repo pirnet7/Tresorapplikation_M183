@@ -14,7 +14,7 @@ function LoginUser({loginValues, setLoginValues}) {
     };
 
     return (
-        <div>
+        <main>
             <h2>Login user</h2>
             <form onSubmit={handleSubmit}>
                 <section>
@@ -45,7 +45,7 @@ function LoginUser({loginValues, setLoginValues}) {
                 </section>
                 <button type="submit">Login</button>
             </form>
-        </div>
+        </main>
     );
 }
 
