@@ -19,12 +19,49 @@ function RegisterUser({loginValues, setLoginValues}) {
     };
     const [credentials, setCredentials] = useState(initialState);
     const [errorMessage, setErrorMessage] = useState('');
+    const [passwordCriteriaStatus, setPasswordCriteriaStatus] = useState({
+        minLength: false,
+        hasUpperCase: false,
+        hasLowerCase: false,
+        hasDigit: false,
+        hasSpecialChar: false,
+    });
+
+    const updatePasswordCriteria = (password) => {
+        const criteria = {
+            minLength: password.length >= 8,
+            hasUpperCase: /[A-Z]/.test(password),
+            hasLowerCase: /[a-z]/.test(password),
+            hasDigit: /[0-9]/.test(password),
+            hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password),
+        };
+        setPasswordCriteriaStatus(criteria);
+        return criteria; // Return for immediate use if needed
+    };
+
+    const isPasswordStrong = (password) => {
+        // Re-evaluates criteria for submission; does not rely on state for logic here.
+        const criteria = {
+            minLength: password.length >= 8,
+            hasUpperCase: /[A-Z]/.test(password),
+            hasLowerCase: /[a-z]/.test(password),
+            hasDigit: /[0-9]/.test(password),
+            hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password),
+        };
+        return Object.values(criteria).every(status => status);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
         //validate
+        updatePasswordCriteria(credentials.password); // Ensure checklist UI is updated on submit attempt
+        if (!isPasswordStrong(credentials.password)) {
+            setErrorMessage('Please ensure all password requirements are met (see checklist below).');
+            return;
+        }
+
         if(credentials.password !== credentials.passwordConfirmation) {
             console.log("password != passwordConfirmation");
             setErrorMessage('Password and password-confirmation are not equal.');
@@ -86,10 +123,13 @@ function RegisterUser({loginValues, setLoginValues}) {
                         <div>
                             <label>Password:</label>
                             <input
-                                type="text"
+                                type="password"
                                 value={credentials.password}
-                                onChange={(e) =>
-                                    setCredentials(prevValues => ({...prevValues, password: e.target.value}))}
+                                onChange={(e) => {
+                                    const newPassword = e.target.value;
+                                    setCredentials(prevValues => ({...prevValues, password: newPassword}));
+                                    updatePasswordCriteria(newPassword);
+                                }}
                                 required
                                 placeholder="Please enter your pwd *"
                             />
@@ -97,13 +137,32 @@ function RegisterUser({loginValues, setLoginValues}) {
                         <div>
                             <label>Password confirmation:</label>
                             <input
-                                type="text"
+                                type="password"
                                 value={credentials.passwordConfirmation}
                                 onChange={(e) =>
                                     setCredentials(prevValues => ({...prevValues, passwordConfirmation: e.target.value}))}
                                 required
                                 placeholder="Please confirm your pwd *"
                             />
+                        </div>
+                        <div>
+                            <ul style={{ listStyleType: 'none', paddingLeft: 0, marginTop: '10px', fontSize: '0.9em' }}>
+                                <li style={{ color: passwordCriteriaStatus.minLength ? 'green' : '#666' }}>
+                                    {passwordCriteriaStatus.minLength ? '✓' : '•'} At least 8 characters
+                                </li>
+                                <li style={{ color: passwordCriteriaStatus.hasUpperCase ? 'green' : '#666' }}>
+                                    {passwordCriteriaStatus.hasUpperCase ? '✓' : '•'} At least one uppercase letter (A-Z)
+                                </li>
+                                <li style={{ color: passwordCriteriaStatus.hasLowerCase ? 'green' : '#666' }}>
+                                    {passwordCriteriaStatus.hasLowerCase ? '✓' : '•'} At least one lowercase letter (a-z)
+                                </li>
+                                <li style={{ color: passwordCriteriaStatus.hasDigit ? 'green' : '#666' }}>
+                                    {passwordCriteriaStatus.hasDigit ? '✓' : '•'} At least one digit (0-9)
+                                </li>
+                                <li style={{ color: passwordCriteriaStatus.hasSpecialChar ? 'green' : '#666' }}>
+                                    {passwordCriteriaStatus.hasSpecialChar ? '✓' : '•'} At least one special character (e.g. !@#$%)
+                                </li>
+                            </ul>
                         </div>
                     </aside>
                 </section>
