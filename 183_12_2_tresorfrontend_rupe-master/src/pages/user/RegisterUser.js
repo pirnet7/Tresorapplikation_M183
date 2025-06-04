@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {postUser} from "../../comunication/FetchUser";
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 /**
  * RegisterUser
@@ -19,6 +20,7 @@ function RegisterUser({loginValues, setLoginValues}) {
     };
     const [credentials, setCredentials] = useState(initialState);
     const [errorMessage, setErrorMessage] = useState('');
+    const { executeRecaptcha } = useGoogleReCaptcha();
     const [passwordCriteriaStatus, setPasswordCriteriaStatus] = useState({
         minLength: false,
         hasUpperCase: false,
@@ -51,9 +53,16 @@ function RegisterUser({loginValues, setLoginValues}) {
         return Object.values(criteria).every(status => status);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         setErrorMessage('');
+
+        if (!executeRecaptcha) {
+            setErrorMessage('reCAPTCHA not ready. Please try again in a moment.');
+            return;
+        }
+
+        const recaptchaToken = await executeRecaptcha('register');
 
         //validate
         updatePasswordCriteria(credentials.password); // Ensure checklist UI is updated on submit attempt
@@ -69,7 +78,7 @@ function RegisterUser({loginValues, setLoginValues}) {
         }
 
         try {
-            await postUser(credentials);
+            await postUser(credentials, recaptchaToken);
             setLoginValues({userName: credentials.email, password: credentials.password});
             setCredentials(initialState);
             navigate('/');
@@ -77,7 +86,7 @@ function RegisterUser({loginValues, setLoginValues}) {
             console.error('Failed to fetch to server:', error.message);
             setErrorMessage(error.message);
         }
-    };
+    }, [executeRecaptcha, credentials, setLoginValues, navigate, setCredentials, initialState, updatePasswordCriteria]); // Added dependencies to useCallback
 
     return (
         <div>
@@ -168,6 +177,11 @@ function RegisterUser({loginValues, setLoginValues}) {
                 </section>
                 <button type="submit">Register</button>
                 {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                <p style={{ fontSize: '0.8em', color: '#666', marginTop: '15px', textAlign: 'center' }}>
+                    This site is protected by reCAPTCHA and the Google&nbsp;
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and&nbsp;
+                    <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
+                </p>
             </form>
         </div>
     );

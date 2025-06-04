@@ -39,6 +39,10 @@
 
 /* Add custom styling for checkboxes/radios if desired for a more modern look */
 
+.grecaptcha-badge { 
+    visibility: hidden !important; 
+}
+
 /* Enhanced Form Styling (as Cards) */
 form {
     /* mvp.css already provides: border, border-radius, box-shadow, padding, max-width */

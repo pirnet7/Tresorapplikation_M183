@@ -2,12 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <GoogleReCaptchaProvider reCaptchaKey="6Ld0WlUrAAAAAFOp4pajzCxW_Nw7XU0NAwu-JnIb">
+      <App />
+    </GoogleReCaptchaProvider>
   </React.StrictMode>
 );
 

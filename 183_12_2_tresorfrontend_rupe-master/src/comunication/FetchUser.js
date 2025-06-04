@@ -34,7 +34,7 @@ export const getUsers = async () => {
     }
 }
 
-export const postUser = async (content) => {
+export const postUser = async (content, recaptchaToken) => {
     const protocol = process.env.REACT_APP_API_PROTOCOL; // "http"
     const host = process.env.REACT_APP_API_HOST; // "localhost"
     const port = process.env.REACT_APP_API_PORT; // "8080"
@@ -53,7 +53,8 @@ export const postUser = async (content) => {
                 lastName: `${content.lastName}`,
                 email: `${content.email}`,
                 password: `${content.password}`,
-                passwordConfirmation: `${content.passwordConfirmation}`
+                passwordConfirmation: `${content.passwordConfirmation}`,
+                recaptchaToken: recaptchaToken
             })
         });
 
