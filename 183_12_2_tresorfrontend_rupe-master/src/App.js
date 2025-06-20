@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './App.css';
 import './css/mvp.css';
@@ -22,8 +22,46 @@ function App() {
         email: "",
         password: "",
     });
+    const cursorRef = useRef(null);
+
+    useEffect(() => {
+        const cursor = cursorRef.current;
+        if (!cursor) return;
+
+        const moveCursor = (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        };
+
+        const growCursor = () => cursor.classList.add('cursor-grow');
+        const shrinkCursor = () => cursor.classList.remove('cursor-grow');
+
+        window.addEventListener('mousemove', moveCursor);
+
+        // We need to use a timeout to ensure the elements are in the DOM
+        const timer = setTimeout(() => {
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [role="button"]');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseover', growCursor);
+                el.addEventListener('mouseleave', shrinkCursor);
+            });
+        }, 100);
+
+
+        return () => {
+            window.removeEventListener('mousemove', moveCursor);
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [role="button"]');
+            interactiveElements.forEach(el => {
+                el.removeEventListener('mouseover', growCursor);
+                el.removeEventListener('mouseleave', shrinkCursor);
+            });
+            clearTimeout(timer);
+        };
+    }, []);
+
     return (
         <div className="App">
+            <div ref={cursorRef} className="cursor"></div>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Layout loginValues={loginValues}/>}>

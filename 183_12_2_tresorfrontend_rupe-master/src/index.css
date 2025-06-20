@@ -1,10 +1,33 @@
 body {
+  cursor: none; /* Hide the default cursor */
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Cursor Styles */
+.cursor {
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none; /* Allows clicking through the element */
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, border-width 0.2s, background-color 0.2s;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+}
+
+.cursor-grow {
+  width: 40px;
+  height: 40px;
+  border-width: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 code {
